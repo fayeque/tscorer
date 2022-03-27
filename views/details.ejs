@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .parent{
+            height: 100vh;
+        }
+        .top{
+            background-color: darkgreen;
+            height: 10vh;
+            display: flex;
+            justify-content:flex-start;
+            align-items:center;
+            color: white;
+        }
+        .bottom{
+            height: 90VH;
+            display: flex;
+            flex-direction: column;
+            background-color: lightgray;
+        }
+        .section1{
+            margin-top:0.5rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            height:20%;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0.26);
+            background-color: white;
+            padding: 1rem;
+        }
+        .section2{
+            margin-top:0.5rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            height:40%;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0.26);
+            background-color: white;
+            padding: 1rem;
+        }
+        .section3{
+            margin-top:0.5rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            height:15%;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0.26);
+            background-color: white;
+            padding: 1rem;
+        }
+
+        table{
+            /* font-family: arial, sans-serif; */
+            border-collapse: collapse;
+            width: 100%;
+            /* height: 30vh; */
+            /* height: 80%; */
+        }
+        /* .table2{
+            border-collapse: collapse;
+            width: 100%;
+            height:80%;
+        }
+        tr{
+            height: 25px;
+        } */
+
+        td, th {
+            text-align: left;
+            padding: 2px;
+        }
+        h5{
+            font-weight: lighter;
+        }
+        .timeline{
+            display: flex;
+
+            overflow-x: scroll;
+        }
+        .timeline_bowl{
+            border-radius: 50%;
+            background-color: green;
+            min-width:30px;
+            height: 25px;
+            margin-left:10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        a{
+            outline: none;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <div style='display:flex;height:8vh;padding:5px;background-color:darkgreen;color:white'>
+        <h2><a style='color:white' href="/">Tarbangla</a></h2>
+        <h4 style='padding-top:8px;margin-left:5px'>Scorer</h4>
+    </div>
+    <div class="parent">
+        <div class="top">
+            <div>
+            <a href="/"><p style="margin-left: 5px;"><%= data.batting %> vs <%= data.bowling %></p></a>
+            </div>
+        </div>
+        <div class="bottom">
+            <div class="section1">
+                <div class="tableSection1">
+                    <table class="table1">
+                        <tr>
+                            <th>
+                                <h5><%= data.batting %></h5>
+                            </th>
+                            <th>
+                                <h5>CRR</h5>
+                            </th>
+                            <th>
+                                <h5>Target</h5>
+                            </th>
+                            <th>
+                                <h5>RR</h5>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td style="display:flex;"><h2><%= data[data.batting].runs %> - <%= data[data.batting].wickets %></h2> <p style="padding:5px;">(<%= data[data.batting].overs %>.<%= data[data.batting].balls %>)</p></td>
+                            <td><h5><%= (data[data.batting].runs / parseFloat(data[data.batting].overs + data[data.batting].balls/6)).toFixed(2) %></h5></td>
+                            <td><% if(!data.battingFirst){ %>
+                                <h5><%= data.toWin %></h5>
+                            <% }else{ %>
+                                <h5>-</h5>
+                            <% } %></td>
+                            <td><% if(!data.battingFirst){ %>
+                                <h5><%= data.toWin %></h5>
+                            <% }else{ %>
+                                <h5>-</h5>
+                            <% } %></td>
+                        </tr>
+                    </table>
+                    <div>
+                        <% if(!data.battingFirst){ %>
+                            <h5><%= data.batting %> needs <%= data.toWin - data[data.batting].runs +1 %> runs in <%= data.overs*6 -  data[data.batting].overs*6 - data.bowler.ballsDelivered %> balls </h5>
+                        <% }else{ %>
+                            <h5></h5>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="section2">
+                <table style="height:150px" class="table2">
+                    <tr>
+                        <th>
+                            <h5>Batsman</h5>
+                        </th>
+                        <th>
+                            <h5>R</h5>
+                        </th>
+                        <th>
+                            <h5>B</h5>
+                        </th>
+                        <th>
+                            <h5>4s</h5>
+                        </th>
+                        <th>
+                            <h5>6s</h5>
+                        </th>
+                        <th>
+                            <h5>SR</h5>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td><h4><%= data.striker.name %>*</h4></td>
+                        <td><h4><%= data.striker.runs %></h4></td>
+                        <td><h4><%= data.striker.balls %></h4></td>
+                        <td><h4><%= data.striker.fours %></h4></td>
+                        <td><h4><%= data.striker.sixes %></h4></td>
+                        <td><% if(data.striker.runs == 0){ %>
+                            <h4>0</h4>
+                        <% }else{ %>
+                            <h4><%= ((data.striker.runs/data.striker.balls)*100).toFixed(2) %></h4>
+                        <% } %></td>
+                    </tr>
+                    <tr>
+                        <td><h4><%= data.nonStriker.name %></h4></td>
+                        <td><h4><%= data.nonStriker.runs %></h4></td>
+                        <td><h4><%= data.nonStriker.balls %></h4></td>
+                        <td><h4><%= data.nonStriker.fours %></h4></td>
+                        <td><h4><%= data.nonStriker.sixes %></h4></td>
+                        <td><% if(data.nonStriker.runs == 0){ %>
+                            <h4>0</h4>
+                        <% }else{ %>
+                            <h4><%= ((data.nonStriker.runs/data.nonStriker.balls)*100).toFixed(2) %></h4>
+                        <% } %></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <h5>Bowler</h5>
+                        </th>
+                        <th>
+                            <h5>O</h5>
+                        </th>
+                        <th>
+                            <h5>R</h5>
+                        </th>
+                        <th>
+                            <h5>W</h5>
+                        </th>
+                        <th>
+                            <h5>ER</h5>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td><h4><%= data.bowler.name %></h4></td>
+                        <td><h4><%= data.bowler.overs + data.bowler.ballsDelivered/10 %></h4></td>
+                        <td><h4><%= data.bowler.runsGiven %></h4></td>
+                        <td><h4><%= data.bowler.wicket %></h4></td>
+                        <td><% if(data.bowler.runsGiven == 0){ %>
+                            <h5>0</h5>
+                        <% }else{ %>
+                            <h5><%= ((data.bowler.runsGiven)/(data.bowler.overs + data.bowler.ballsDelivered/6)).toFixed(1) %></h5>
+                        <% } %></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="section3">
+                <h6>This over:</h6>
+                <div class="timeline">
+                <% data.bowler.timeline.forEach((t) => { %>
+                    <div class="timeline_bowl">
+                        <h6><%= t.runs %><%= t.extra %></h6>
+                    </div>
+                <% }) %>
+                </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <title>Document</title>
+    <style>
+        h6{
+            font-size: x-small;
+        }
+    </style>
+</head>
+<body>
+    <div style='display:flex;height:8vh;padding:5px;background-color:darkgreen;color:white'>
+        <h2><a style='color:white' href="/">Tarbangla</a></h2>
+        <h4 style='padding-top:8px;margin-left:5px'>Scorer</h4>
+    </div>
+    <div>
+        <% if(!data.gameOver  && !data.battingFirst){ %>
+            <h5 style='margin-top:10px;'>
+                <%= data.batting %> needs <%= data.toWin - data[data.batting].runs +1 %> runs in <%= data.overs*6 -  data[data.batting].overs*6 - data.bowler.ballsDelivered %> balls
+            </h5>
+        <%  } %>
+           <div style='display:flex;padding:15px;justify-content:space-between;align-items:center;margin-top:15px;background-color:darkgreen;color:white;height:30px;'> 
+               <h4><%= data.batting %></h4>
+               <div style='display:flex'>
+               <h4><%= data[data.batting].runs %>/<%= data[data.batting].wickets %></h4>
+               <h6 style='margin-left:5px'>(<%= data[data.batting].overs + "." + data[data.batting].balls %>)</h6>
+
+               </div>
+           </div>
+           <div>
+           <div class="flex flex-col">
+<div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+<div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+ <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+   <table class="min-w-full divide-y divide-gray-200">
+     <thead class="bg-gray-50">
+       <tr>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           Batsman
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           R
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           B
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           4s
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           6s
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           SR
+         </th>
+       </tr>
+     </thead>
+     <tbody class="bg-white divide-y divide-gray-200">
+       <% data[data.batting].batsmans.forEach((person,i) => { %>
+
+         <tr>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="flex items-center">
+               <div class="ml-4">
+                 <div class="text-md font-medium text-gray-600"><%= person.name %></div>
+                 <% if(person.notout){ %>  
+                    <h6>Not out</h6>
+                 <% }else{ %>
+                        <% if(person.runOut){ %>
+                            <h6>Runout</h6>
+                        <% }else{ %>
+                            <h6 className="text-md font-medium text-gray-600">b <%= person.outBy %></h6>
+                        <% } %>
+                <% } %>
+               </div>
+             </div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.runs %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.balls %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.fours %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.sixes %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><% if(person.runs==0){ %>
+                <p>0</p>
+              <% }else{ %>
+                <p><%= ((person.runs/person.balls)*100).toFixed(2) %></p>
+            <% } %> 
+           </td>
+
+         </tr>
+       <% }) %>
+     </tbody>
+   </table>
+ </div>
+</div>
+</div>
+</div>
+
+<div class="flex flex-col">
+<div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+<div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+ <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+   <table class="min-w-full divide-y divide-gray-200">
+     <thead class="bg-gray-50">
+       <tr>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           Bowlers
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           O
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           R
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           W
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           ER
+         </th>
+       </tr>
+     </thead>
+     <tbody class="bg-white divide-y divide-gray-200">
+       <% data[data.bowling].bowlers.forEach((person,i) => { %> 
+
+         <tr>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="flex items-center">
+               <div class="ml-4">
+                 <div class="text-md font-medium text-gray-600"><%= person.name %></div>
+               </div>
+             </div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.overs %>.<%= person.ballsDelivered %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.runsGiven %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.wicket %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900">
+                <% if(person.runsGiven == 0){ %>
+                    <p>0</p>
+                  <% }else{ %>
+                    <p><%= ((person.runsGiven)/(person.overs + person.ballsDelivered/6)).toFixed(1) %></p>
+                <% } %> 
+           </td>
+
+         </tr>
+       <% }) %>
+     </tbody>
+   </table>
+ </div>
+</div>
+</div>
+</div>
+               
+        <div style='display:flex;padding:15px;justify-content:space-between;align-items:center;margin-top:15px;background-color:darkgreen;color:white;height:30px;'> 
+               <h4><%= data.bowling %></h4>
+               <div style='display:flex'>
+               <h4><%= data[data.bowling].runs %>/<%= data[data.bowling].wickets %></h4>
+               <h6 style='margin-left:5px'>(<%= data[data.bowling].overs + "." + data[data.bowling].balls %>)</h6>
+
+               </div>
+           </div>
+
+<div class="flex flex-col">
+<div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+<div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+ <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+   <table class="min-w-full divide-y divide-gray-200">
+     <thead class="bg-gray-50">
+       <tr>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           Batsman
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           R
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           B
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           4s
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           6s
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           SR
+         </th>
+       </tr>
+     </thead>
+     <tbody class="bg-white divide-y divide-gray-200">
+       <% data[data.bowling].batsmans.forEach((person,i) => { %>
+
+         <tr>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="flex items-center">
+               <div class="ml-4">
+                 <div class="text-md font-medium text-gray-600"><%= person.name %></div>
+                 <% if(person.notout){ %>  
+                    <h6>Not out</h6>
+                 <% }else{ %>
+                        <% if(person.runOut){ %>
+                            <h6>Runout</h6>
+                        <% }else{ %>
+                            <h6 className="text-md font-medium text-gray-600">b <%= person.outBy %></h6>
+                        <% } %>
+                <% } %>
+               </div>
+             </div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.runs %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.balls %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.fours %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.sixes %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900">
+                <% if(person.runs==0){ %>
+                    <p>0</p>
+                  <% }else{ %>
+                    <p><%= ((person.runs/person.balls)*100).toFixed(2) %></p>
+                <% } %> 
+             </div>
+           </td>
+
+         </tr>
+        <% }) %>
+     </tbody>
+   </table>
+ </div>
+</div>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+<div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+ <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+   <table class="min-w-full divide-y divide-gray-200">
+     <thead class="bg-gray-50">
+       <tr>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           Bowlers
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           O
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           R
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           W
+         </th>
+         <th
+           scope="col"
+           class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+         >
+           ER
+         </th>
+       </tr>
+     </thead>
+     <tbody class="bg-white divide-y divide-gray-200">
+       <% data[data.batting].bowlers.forEach((person,i) => { %>
+
+         <tr>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="flex items-center">
+               <div class="ml-4">
+                 <div class="text-md font-medium text-gray-600"><%= person.name %></div>
+               </div>
+             </div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.overs %>.<%= person.ballsDelivered %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.runsGiven %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900"><%= person.wicket %></div>
+           </td>
+           <td class="px-2 py-1 whitespace-nowrap">
+             <div class="text-sm text-gray-900">
+                <% if(person.runsGiven == 0){ %>
+                    <p>0</p>
+                  <% }else{ %>
+                    <p><%= ((person.runsGiven)/(person.overs + person.ballsDelivered/6)).toFixed(1) %></p>
+                <% } %> 
+             </div> 
+           </td>
+
+         </tr>
+        <% }) %>
+     </tbody>
+   </table>
+ </div>
+</div>
+</div>
+</div>
+
+       </div>
+       </div>
+</body>
+</html>
