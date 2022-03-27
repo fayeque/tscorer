@@ -5,6 +5,8 @@ var mongoose = require("mongoose");
 var cors=require("cors");
 var path=require('path');
 const Match = require("./models/Match");
+var util= require('util');
+var encoder = new util.TextEncoder('utf-8');
 // var flash=require("connect-flash");
 // var Player = require("./models/Player");
 
