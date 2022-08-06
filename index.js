@@ -40,13 +40,11 @@ app.set("view engine","ejs");
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-
-
-
  app.get("/m",async (req,res) => {
     var matches= await Match.find({matchStarted:true}).sort({createdAt:-1});
     // console.log(matches[0].details[matches[0].details.batting]);
-    res.render('home.ejs',{matches:matches});
+    // res.render('home.ejs',{matches:matches});
+    res.json({matches});
     // res.render('publicLanding',{players:players,tcm:tcm,acm:amountCollected,totalPlayers:totalPlayers,playersAttend:playersAttend});
  });
 
@@ -76,12 +74,14 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.get("/match/:matchId",async (req,res) => {
     var d=await Match.findOne({matchId:req.params.matchId});
     console.log(d);
-    res.render('details',{data:d.details});
+    // res.render('details',{data:d.details});
+    res.json({d});
 })
 
 app.get("/match/scorecard/:matchId",async (req,res) => {
     var d=await Match.findOne({matchId:req.params.matchId});
-    res.render("scorecard",{data:d.details});
+    res.json({data:d.details});
+    // res.render("scorecard",{data:d.details});
 })
 
 app.get('*', function(req, res) {

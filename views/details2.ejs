@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="description"
+      content="Omnifood is an AI-powered food subscription that will make you eat healthy again, 365 days per year. It's tailored to your personal tastes and nutritional needs."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" href="img/favicon.png" />
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule=""
+      src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js"
+    ></script>
+    <title>React App</title>
+    <style>
+        * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* font-size: 10px; */
+
+  /* 10px / 16px = 0.625 = 62.5% */
+  /* Percentage of user's browser font-size setting */
+  font-size: 62.5%;
+  overflow-x: hidden;
+
+  /* Does NOT work on Safari */
+  /* scroll-behavior: smooth; */
+}
+
+body {
+  font-family: "Rubik", sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  color: #555;
+
+  /* Only works if there is nothing absolutely positioned in relation to body */
+  overflow-x: hidden;
+  background: url("https://t4.ftcdn.net/jpg/03/90/66/17/360_F_390661775_BY3omV6LTS2064GbghxN9MBxgp4oV67W.jpg") no-repeat;
+  background-size: cover;
+}
+html,body{
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  /* 1140px */
+  max-width: 120rem;
+  padding: 0 1rem;
+  margin: 0 auto;
+}
+
+.btn,
+.btn:link,
+.btn:visited {
+  display: inline-block;
+
+  text-decoration: none;
+  font-size: 2rem;
+  font-weight: 600;
+  padding: 1.6rem 3.2rem;
+  border-radius: 9px;
+
+  /* Only necessary for .btn */
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+
+  /* Put transition on original "state" */
+  /* transition: background-color 0.3s; */
+  transition: all 0.3s;
+}
+
+
+.btnForm {
+  background-color: #45260a;
+  color: #fdf2e9;
+  align-self: end;
+  padding: 1.2rem;
+}
+
+.btnForm:hover {
+  background-color: #fff;
+  color: #555;
+}
+/* .parent{
+    height: 100vh;
+} */
+
+.parentTop{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1rem;
+    text-align: center;
+}
+.parentSection{
+    padding: 2rem 0;
+}
+.parentTop p{
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: white;
+}
+
+
+#battingText{
+    font-size: 2rem;
+    font-weight: 600;
+}
+#score{
+    font-size: 1.8rem;
+}
+
+.toWin{
+    font-size: 1.8rem;
+    font-weight: 450;
+    color: white;
+    padding-top: 1.6rem;
+    text-align: center;
+}
+
+
+.parentMiddle{
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+    row-gap: 1rem;
+    margin-bottom: 2.4rem;
+}
+
+.parentMiddleTop{
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: white;
+
+}
+
+.parentMiddleBottom{
+    font-size: 2rem;
+    font-weight: 600;
+    color: white;
+}
+
+.section3 p{
+    font-size: 1.6rem;
+    color: #333;
+    font-weight: 500;
+}
+.section3:nth-child(1){
+    margin-right: 1rem;
+}
+.section3{
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0.26);
+    background-color: white;
+    padding: 1.2rem 1rem;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+}
+.timeline{
+    display: flex;
+    overflow-x: scroll;
+}
+.timelineBowl{
+    /* border-radius: 100%; */
+    background-color: #2b2c2d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-left: 0.5rem;
+}
+
+.timelineBowl p{
+    color: white;
+    padding: 1rem 1rem;
+    margin-bottom: 0rem;
+}
+
+.bottom{
+    display: grid;
+    grid-template-columns: 1.5fr 3fr;
+    column-gap: 1rem;
+    padding: 1rem 0;
+}
+.bottomLeft{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    /* justify-content:space-evenly; */
+    /* align-items:center; */
+}
+#btnBottom{
+    background-color: white;
+    color: #2b2c2d;
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+    padding: 1.6rem;
+}
+
+#btnRightBottom{
+    background-color: white;
+    color: #2b2c2d;
+} 
+
+.bottomRightTop{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.bottomRightBottom{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1rem;
+}
+
+.bottomRightBottom label{
+    display: flex;
+    align-items: center;
+}
+
+.bottomRightBottom label p{
+    font-size: 2rem;
+    color: white;
+    margin-left: 0.5rem;
+}
+
+.bottomRightBottom label input{
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.inningOver{
+    margin-top: 3rem;
+}
+
+.navbarSection{
+    /* padding: 1.8rem 0; */
+    background-color: #2b2c2d;
+    position: relative;
+    z-index: 0;
+}
+
+.allMatchSection{
+    background-color: #2b2c2d;
+    position: relative;
+    z-index: 0;
+    padding: 2rem 0;
+}
+.parent{
+    display: flex;
+    /* justify-content: flex-end; */
+    align-items: center;
+    position: relative;
+    z-index: -2;
+}
+
+.parent h2{
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: white;
+    padding: 2rem 1rem;
+}
+
+.startMatch{
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: white;
+    padding: 2rem 1rem;
+    cursor: pointer;
+}
+
+.left{
+    width: 50%;
+    background-color:#b40000;
+    text-align: center;
+    position: relative;
+}
+.left::before{
+    content: "";
+    position: absolute;
+    /* width: 25rem; */
+    height: 100%;
+    transform: skew(-25deg, 0);
+    left: 0px;
+    right: -1.5rem;
+    background-color:#b40000;
+    z-index: -1;
+}
+.right
+{
+    width: 50%;
+    text-align: center;
+}
+
+.parent p{
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: white;
+}
+
+    </style>
+  </head>
+  <body>
+    <div>
+        <div className="parent">
+        <section className="navbarSection">
+        <div className="parent">
+            <div className="left">
+            <h2><a href="/">{data.batting}</a></h2>
+            </div>
+            <div className="right">
+            <h3 className="startMatch">{data.bowling}</h3>
+            </div>
+        </div>
+        </section> 
+        
+        <section className="mainSection}>
+        <div className="container">
+           <div className="parentSection}>
+               <div className="parentTop}>
+                    <p id="battingText}>{data.batting}</p>
+                    <p>CRR</p>
+                    <p>Target</p>
+                    <p>RR</p>
+                    <p id="score}>{ data[data.batting].runs } - { data[data.batting].wickets } <span>({ data[data.batting].overs }.{ data[data.batting].balls })</span></p>
+                    <p>{ (data[data.batting].runs / parseFloat(data[data.batting].overs + data[data.batting].balls/6)).toFixed(2) }</p>
+                    <p>{!data.battingFirst ? <h5>{ data.toWin }</h5> : <h5>-</h5> }</p>
+                    <p>{!data.battingFirst ? <h5>{ data.toWin }</h5> : <h5>-</h5> }</p>
+               </div>
+               <p className="toWin}> {!data.battingFirst ? <h5>{ data.batting } needs { data.toWin - data[data.batting].runs +1 } runs in { data.overs*6 -  data[data.batting].overs*6 - data.bowler.ballsDelivered } balls </h5> : "Akill11 Need 6 runs in 5 balls" }</p>
+           </div>
+           <div className="parentMiddle}>
+               <p className="parentMiddleTop}>Batter</p>
+               <p className="parentMiddleTop}>R</p>
+               <p className="parentMiddleTop}>B</p>
+               <p className="parentMiddleTop}>4s</p>
+               <p className="parentMiddleTop}>6s</p>
+               <p className="parentMiddleTop}>SR</p>
+               <p className="parentMiddleBottom}>{ data.striker.name } *</p>
+                <p className="parentMiddleBottom}>{ data.striker.runs }</p>
+                <p className="parentMiddleBottom}>{ data.striker.balls }</p>
+                <p className="parentMiddleBottom}>{ data.striker.fours }</p>
+                <p className="parentMiddleBottom}>{ data.striker.sixes }</p>
+                <p className="parentMiddleBottom}>{data.striker.runs == 0 ? <p>0</p> :<p>{ ((data.striker.runs/data.striker.balls)*100).toFixed(2) }</p> }</p>
+                <p className="parentMiddleBottom}>{ data.nonStriker.name }</p>
+                <p className="parentMiddleBottom}>{ data.nonStriker.runs }</p>
+                <p className="parentMiddleBottom}>{ data.nonStriker.balls }</p>
+                <p className="parentMiddleBottom}>{ data.nonStriker.fours }</p>
+                <p className="parentMiddleBottom}>{ data.nonStriker.sixes }</p>
+                <p className="parentMiddleBottom}>{data.nonStriker.runs == 0 ? <p>0</p> :<p>{ ((data.nonStriker.runs/data.nonStriker.balls)*100).toFixed(2) }</p> }</p>
+                <p className="parentMiddleTop}>Bowler</p>
+               <p className="parentMiddleTop}>O</p>
+               <p className="parentMiddleTop}>R</p>
+               <p className="parentMiddleTop}>W</p>
+               <p className="parentMiddleTop}>ER</p>
+               <p></p>
+               <p className="parentMiddleBottom}>{ data.bowler.name }</p>
+                <p className="parentMiddleBottom}>{ data.bowler.overs + data.bowler.ballsDelivered/10 }</p>
+                <p className="parentMiddleBottom}>{ data.bowler.runsGiven }</p>
+                <p className="parentMiddleBottom}>{ data.bowler.wicket }</p>
+                <p className="parentMiddleBottom}>{data.bowler.runsGiven == 0 ? <p>0</p> :  <p>{ ((data.bowler.runsGiven)/(data.bowler.overs + data.bowler.ballsDelivered/6)).toFixed(1) }</p> }</p>
+           </div>
+           <div className="section3}>
+                          <p>This over:</p>
+                            <div className="timeline}>
+                                {data.bowler.timeline.map((t) => {
+                              return (<div className="timelineBowl}>
+                                  <p>{ t.runs }{ t.extra }</p>
+                              </div>
+                              )
+                                }) }
+                            </div>
+            </div>
+            <div className="bottom}>
+                 <div className="bottomLeft}>
+                    <button onClick = {(e) => swapBatsman()} id="btnBottom} className="btn">Swap</button>
+                    <button onClick = {(e) => undo()} id="btnBottom} className="btn">Undo</button>
+                 </div>
+                 <div className="bottomRight}>
+                                <div className="bottomRightTop}>
+                                <button className="btn" id="btnRightBottom} onClick={(e) => handleClick(e) }><p>0</p></button>
+                                <button className="btn" id="btnRightBottom}  onClick={(e) => handleClick(e) }><p>1</p></button>
+                                <button className="btn" id="btnRightBottom}  onClick={(e) => handleClick(e) }><p>2</p></button>
+                                <button className="btn" id="btnRightBottom}  onClick={(e) => handleClick(e) }><p>3</p></button>
+                                <button className="btn" id="btnRightBottom}  onClick={(e) => handleClick(e) }><p>4</p></button>
+                                <button className="btn" id="btnRightBottom}  onClick={(e) => handleClick(e) }><p>5</p></button>
+                                <button className="btn" id="btnRightBottom}  onClick={(e) => handleClick(e) }><p>6</p></button>
+                                </div>
+                                <div class="bottomRightBottom">
+                                    <label>
+                                    <input
+                                     type="checkbox"
+                                    checked={extra.wide}
+                                    onChange={handleWide}
+                                    />
+                                    <p>Wide</p>
+                                    </label >
+                                    <label>
+                                    <input
+                                    type="checkbox"
+                                    checked={extra.noBall}
+                                    onChange={handleNoBall}
+                                    />
+                                    <p>No ball</p>
+                                    </label>
+                                    <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={extra.legBye}
+                                        onChange={handleLegBye}
+                                    />
+                                    <p>Leg byes</p>
+                                    </label>
+                                    <label>
+                                    <input
+                                         type="checkbox"
+                                        checked={extra.wicket}
+                                        onChange={handleWicket}
+                                    />
+                                    <p>Wicket</p>
+                                    </label>
+                                </div>
+        
+                 </div>
+            </div>
+            <div className="inningOver">
+            {data.battingFirst ? <button className="btn" onClick={handleOver}>Innings over</button>:<button className="btn" onClick={gameOver}>Game over</button>}
+            </div>
+        
+        </div>
+        </section>
+                </div>
+  </body>
+</html>
+
+
+
+
