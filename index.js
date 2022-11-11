@@ -6,6 +6,7 @@ var cors=require("cors");
 var path=require('path');
 const Match = require("./models/Match");
 var util= require('util');
+const Batsman = require("./models/Batsman");
 var encoder = new util.TextEncoder('utf-8');
 // var flash=require("connect-flash");
 // var Player = require("./models/Player");
@@ -49,20 +50,20 @@ app.use(express.static(path.join(__dirname, 'build')));
  });
 
  app.post("/",async (req,res) => {
-    console.log(req.body);
+    // console.log(req.body);
     var d=new Match({
         matchId:req.body.id,
         details:req.body.data
     });
     var sr=await d.save();
-    console.log(sr);
+    // console.log(sr);
     res.json("Successfull");
  });
 
  app.post("/match/:matchId",async (req,res) => {
-     console.log(req.body);
+    //  console.log(req.body);
     var d=await Match.findOne({matchId:req.params.matchId});
-    console.log(d);
+    // console.log(d);
     d.details = req.body;
     if(!d.matchStarted){
         d.matchStarted = true;
@@ -82,6 +83,129 @@ app.get("/match/scorecard/:matchId",async (req,res) => {
     var d=await Match.findOne({matchId:req.params.matchId});
     res.json({data:d.details});
     // res.render("scorecard",{data:d.details});
+});
+
+// balls: 8
+// dot: 0
+// fours: 3
+// name: "Rohit"
+// notout: false
+// outBy: "Sodhi"
+// runOut: false
+// runs: 19
+// sixes: 0
+// strikeRate: 0
+
+// ---------------
+// runs:Number,
+// ballsPlayed:Number,
+// sixes:Number,
+// fours:Number,
+// dots:Number
+app.post("/generateReport",async (req,res) => {
+    console.log("request here");
+    // console.log(req.body);
+    var d=req.body;
+    console.log(d);
+    var arr=d[d.batting].batsmans.map(async (batsman) => {
+        var b = await Batsman.findOne({name:batsman.name});
+        console.log("value of b",b);
+        if(b==null){
+            var b=new Batsman({
+            name:batsman.name,
+            runs:batsman.runs,
+            ballsPlayed:batsman.balls,
+            // dots:batsman.dots,
+            sixes:batsman.sixes,
+            fours:batsman.fours,
+            matchesPlayed:1
+            });
+            const sdata=await b.save();
+            console.log(sdata);
+        }else{
+        b.runs += batsman.runs;
+        b.ballsPlayed += batsman.balls;
+        b.dots += batsman.dot;
+        b.sixes += batsman.sixes;
+        b.fours += batsman.fours;
+        b.matchesPlayed += 1;
+        var savedData=await b.save();
+        console.log(savedData);
+        }
+    });
+
+    var arr2=d[d.bowling].batsmans.map(async (batsman) => {
+        var b = await Batsman.findOne({name:batsman.name});
+        console.log("value of b",b);
+        if(b==null){
+            var b=new Batsman({
+            name:batsman.name,runs:batsman.runs,ballsPlayed:batsman.balls,
+            dots:batsman.dots,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
+            });
+
+            const sdata=await b.save();
+            console.log(sdata);
+        }else{
+        b.runs += batsman.runs;
+        b.ballsPlayed += batsman.balls;
+        b.dots += batsman.dot;
+        b.sixes += batsman.sixes;
+        b.fours += batsman.fours;
+        b.matchesPlayed += 1;
+        var savedData=await b.save();
+        console.log(savedData);
+        }
+    });
+
+    var arr2=d[d.bowling].batsmans.map(async (batsman) => {
+        var b = await Batsman.findOne({name:batsman.name});
+        console.log("value of b",b);
+        if(b==null){
+            var b=new Batsman({
+            name:batsman.name,runs:batsman.runs,ballsPlayed:batsman.balls,
+            dots:batsman.dots,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
+            });
+
+            const sdata=await b.save();
+            console.log(sdata);
+        }else{
+        b.runs += batsman.runs;
+        b.ballsPlayed += batsman.balls;
+        b.dots += batsman.dot;
+        b.sixes += batsman.sixes;
+        b.fours += batsman.fours;
+        b.matchesPlayed += 1;
+        var savedData=await b.save();
+        console.log(savedData);
+        }
+    });
+
+    var arr2=d[d.bowling].batsmans.map(async (batsman) => {
+        var b = await Batsman.findOne({name:batsman.name});
+        console.log("value of b",b);
+        if(b==null){
+            var b=new Batsman({
+            name:batsman.name,runs:batsman.runs,ballsPlayed:batsman.balls,
+            dots:batsman.dots,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
+            });
+
+            const sdata=await b.save();
+            console.log(sdata);
+        }else{
+        b.runs += batsman.runs;
+        b.ballsPlayed += batsman.balls;
+        b.dots += batsman.dot;
+        b.sixes += batsman.sixes;
+        b.fours += batsman.fours;
+        b.matchesPlayed += 1;
+        var savedData=await b.save();
+        console.log(savedData);
+        }
+    });
+    
+    Promise.all(arr);
+    Promise.all(arr2);
+    res.json("Successfull");
 })
 
 app.get('*', function(req, res) {
