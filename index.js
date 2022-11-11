@@ -44,8 +44,8 @@ app.use(express.static(path.join(__dirname, 'build')));
  app.get("/m",async (req,res) => {
     var matches= await Match.find({matchStarted:true}).sort({createdAt:-1});
     // console.log(matches[0].details[matches[0].details.batting]);
-    // res.render('home.ejs',{matches:matches});
-    res.json({matches});
+    res.render('home.ejs',{matches:matches});
+    //res.json({matches});
     // res.render('publicLanding',{players:players,tcm:tcm,acm:amountCollected,totalPlayers:totalPlayers,playersAttend:playersAttend});
  });
 
