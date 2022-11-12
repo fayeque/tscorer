@@ -6,7 +6,7 @@ var cors=require("cors");
 var path=require('path');
 const Match = require("./models/Match");
 var util= require('util');
-const Batsman = require("./models/Batsman");
+const Batsman = require("./models/PlayerV2");
 var encoder = new util.TextEncoder('utf-8');
 // var flash=require("connect-flash");
 // var Player = require("./models/Player");
@@ -44,8 +44,8 @@ app.use(express.static(path.join(__dirname, 'build')));
  app.get("/m",async (req,res) => {
     var matches= await Match.find({matchStarted:true}).sort({createdAt:-1});
     // console.log(matches[0].details[matches[0].details.batting]);
-    res.render('home.ejs',{matches:matches});
-    //res.json({matches});
+    //res.render('home.ejs',{matches:matches});
+    res.json({matches});
     // res.render('publicLanding',{players:players,tcm:tcm,acm:amountCollected,totalPlayers:totalPlayers,playersAttend:playersAttend});
  });
 
@@ -115,7 +115,7 @@ app.post("/generateReport",async (req,res) => {
             name:batsman.name,
             runs:batsman.runs,
             ballsPlayed:batsman.balls,
-            // dots:batsman.dots,
+            dots:batsman.dot,
             sixes:batsman.sixes,
             fours:batsman.fours,
             matchesPlayed:1
@@ -140,7 +140,7 @@ app.post("/generateReport",async (req,res) => {
         if(b==null){
             var b=new Batsman({
             name:batsman.name,runs:batsman.runs,ballsPlayed:batsman.balls,
-            dots:batsman.dots,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
+            dots:batsman.dot,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
             });
 
             const sdata=await b.save();
@@ -156,55 +156,60 @@ app.post("/generateReport",async (req,res) => {
         console.log(savedData);
         }
     });
-
-    var arr2=d[d.bowling].batsmans.map(async (batsman) => {
-        var b = await Batsman.findOne({name:batsman.name});
-        console.log("value of b",b);
-        if(b==null){
-            var b=new Batsman({
-            name:batsman.name,runs:batsman.runs,ballsPlayed:batsman.balls,
-            dots:batsman.dots,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
+    // bowler:{name:"",runsGiven:0,ballsDelivered:0,overs:0,economy:0,wicket:0,timeline:[]},
+    var arr3=d[d.batting].bowlers.map(async (batsman) => {
+        var p = await Batsman.findOne({name:batsman.name});
+        console.log("value of b",p);
+        if(p==null){
+            var p=new Batsman({
+            name:batsman.name,runsGiven:batsman.runsGiven,ballsDelivered:parseInt(batsman.ballsDelivered + batsman.over*6),
+            overs:`${Math.floor(batsman.over)}.${(batsman.ballsDelivered)}`,
+             wickets : batsman.wickets,economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2)
             });
 
-            const sdata=await b.save();
+            const sdata=await p.save();
             console.log(sdata);
         }else{
-        b.runs += batsman.runs;
-        b.ballsPlayed += batsman.balls;
-        b.dots += batsman.dot;
-        b.sixes += batsman.sixes;
-        b.fours += batsman.fours;
-        b.matchesPlayed += 1;
-        var savedData=await b.save();
-        console.log(savedData);
+            p.runsGiven=p.runsGiven+batsman.runsGiven;
+            p.ballsDelivered=parseInt(p.ballsDelivered+batsman.ballsDelivered);
+            p.ballInnings+=1;
+            p.wickets=p.wickets+batsman.wickets;
+            p.overs=`${Math.floor(p.ballsDelivered/6)}.${(p.ballsDelivered%6)}`;
+            p.economy=(p.runsGiven/parseFloat(p.overs)).toFixed(2);
+            var savedData=await p.save();
+            console.log(savedData);
         }
     });
 
-    var arr2=d[d.bowling].batsmans.map(async (batsman) => {
-        var b = await Batsman.findOne({name:batsman.name});
-        console.log("value of b",b);
-        if(b==null){
-            var b=new Batsman({
-            name:batsman.name,runs:batsman.runs,ballsPlayed:batsman.balls,
-            dots:batsman.dots,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
+    var arr4=d[d.bowling].bowlers.map(async (batsman) => {
+        var p = await Batsman.findOne({name:batsman.name});
+        console.log("value of b",p);
+        if(p==null){
+            var p=new Batsman({
+            name:batsman.name,runsGiven:batsman.runsGiven,ballsDelivered:parseInt(batsman.ballsDelivered + batsman.over*6),
+            overs:`${Math.floor(batsman.over)}.${(batsman.ballsDelivered)}`,
+             wickets : batsman.wickets,economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2)
             });
 
-            const sdata=await b.save();
+            const sdata=await p.save();
             console.log(sdata);
         }else{
-        b.runs += batsman.runs;
-        b.ballsPlayed += batsman.balls;
-        b.dots += batsman.dot;
-        b.sixes += batsman.sixes;
-        b.fours += batsman.fours;
-        b.matchesPlayed += 1;
-        var savedData=await b.save();
-        console.log(savedData);
+            p.runsGiven=p.runsGiven+batsman.runsGiven;
+            p.ballsDelivered=parseInt(p.ballsDelivered+batsman.ballsDelivered);
+            p.ballInnings+=1;
+            p.wickets=p.wickets+batsman.wickets;
+            p.overs=`${Math.floor(p.ballsDelivered/6)}.${(p.ballsDelivered%6)}`;
+            p.economy=(p.runsGiven/parseFloat(p.overs)).toFixed(2);
+            var savedData=await p.save();
+            console.log(savedData);
         }
     });
-    
+
+
     Promise.all(arr);
     Promise.all(arr2);
+    Promise.all(arr3);
+    Promise.all(arr4);
     res.json("Successfull");
 })
 
