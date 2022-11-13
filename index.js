@@ -6,7 +6,8 @@ var cors=require("cors");
 var path=require('path');
 const Match = require("./models/Match");
 var util= require('util');
-const Batsman = require("./models/PlayerV2");
+const Batsman = require("./models/Batsman");
+const Bowler=require("./models/Bowler");
 var encoder = new util.TextEncoder('utf-8');
 // var flash=require("connect-flash");
 // var Player = require("./models/Player");
@@ -107,7 +108,8 @@ app.post("/generateReport",async (req,res) => {
     // console.log(req.body);
     var d=req.body;
     console.log(d);
-    var arr=d[d.batting].batsmans.map(async (batsman) => {
+    // var arr=d[d.batting].batsmans.map(async (batsman) => {
+        for(batsman of d[d.batting].batsmans){
         var b = await Batsman.findOne({name:batsman.name});
         console.log("value of b",b);
         if(b==null){
@@ -115,13 +117,13 @@ app.post("/generateReport",async (req,res) => {
             name:batsman.name,
             runs:batsman.runs,
             ballsPlayed:batsman.balls,
-            dots:batsman.dot,
+            // dots:batsman.dot,
             sixes:batsman.sixes,
             fours:batsman.fours,
             matchesPlayed:1
             });
-            const sdata=await b.save();
-            console.log(sdata);
+            b.save();
+            // console.log(sdata);
         }else{
         b.runs += batsman.runs;
         b.ballsPlayed += batsman.balls;
@@ -129,12 +131,14 @@ app.post("/generateReport",async (req,res) => {
         b.sixes += batsman.sixes;
         b.fours += batsman.fours;
         b.matchesPlayed += 1;
-        var savedData=await b.save();
-        console.log(savedData);
+         b.save();
+        // console.log(savedData);
         }
-    });
+    }
+    // });
 
-    var arr2=d[d.bowling].batsmans.map(async (batsman) => {
+    // var arr2=d[d.bowling].batsmans.map(async (batsman) => {
+        for(batsman of d[d.bowling].batsmans ){
         var b = await Batsman.findOne({name:batsman.name});
         console.log("value of b",b);
         if(b==null){
@@ -143,8 +147,8 @@ app.post("/generateReport",async (req,res) => {
             dots:batsman.dot,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
             });
 
-            const sdata=await b.save();
-            console.log(sdata);
+            b.save();
+            // console.log(sdata);
         }else{
         b.runs += batsman.runs;
         b.ballsPlayed += batsman.balls;
@@ -152,66 +156,107 @@ app.post("/generateReport",async (req,res) => {
         b.sixes += batsman.sixes;
         b.fours += batsman.fours;
         b.matchesPlayed += 1;
-        var savedData=await b.save();
-        console.log(savedData);
+        b.save();
+        // console.log(savedData);
         }
-    });
+    }
+    // });
+
     // bowler:{name:"",runsGiven:0,ballsDelivered:0,overs:0,economy:0,wicket:0,timeline:[]},
-    var arr3=d[d.batting].bowlers.map(async (batsman) => {
-        var p = await Batsman.findOne({name:batsman.name});
+    // var arr3=d[d.batting].bowlers.map(async (batsman) => {
+        for(batsman of d[d.batting].bowlers ){
+        if(batsman.name.trim() != ''){
+        var p = await Bowler.findOne({name:batsman.name});
         console.log("value of b",p);
+        console.log(parseInt(parseInt(batsman.ballsDelivered) + parseInt(batsman.over*6)));
         if(p==null){
-            var p=new Batsman({
-            name:batsman.name,runsGiven:batsman.runsGiven,ballsDelivered:parseInt(batsman.ballsDelivered + batsman.over*6),
-            overs:`${Math.floor(batsman.over)}.${(batsman.ballsDelivered)}`,
-             wickets : batsman.wickets,economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2)
+            var p=new Bowler({
+            name:batsman.name,runsGiven:batsman.runsGiven,ballsDelivered: calcualteBallsDelivered(batsman),
+            overs:`${Math.floor(batsman.overs)}.${(batsman.ballsDelivered)}`,
+             wickets : parseInt(batsman.wicket),economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2),
+             ballInnings : 1
             });
 
-            const sdata=await p.save();
-            console.log(sdata);
+            p.save();
+            // console.log(sdata);
         }else{
-            p.runsGiven=p.runsGiven+batsman.runsGiven;
-            p.ballsDelivered=parseInt(p.ballsDelivered+batsman.ballsDelivered);
-            p.ballInnings+=1;
-            p.wickets=p.wickets+batsman.wickets;
+            p.runsGiven=parseInt(p.runsGiven)+parseInt(batsman.runsGiven);
+            p.ballsDelivered=p.ballsDelivered+calcualteBallsDelivered(batsman);
+            p.ballInnings=p.ballInnings+1;
+            p.wickets=parseInt(p.wickets)+parseInt(batsman.wicket);
             p.overs=`${Math.floor(p.ballsDelivered/6)}.${(p.ballsDelivered%6)}`;
             p.economy=(p.runsGiven/parseFloat(p.overs)).toFixed(2);
-            var savedData=await p.save();
-            console.log(savedData);
+            p.save();
+            // console.log(savedData);
         }
-    });
+    }
+}
+    // });
 
-    var arr4=d[d.bowling].bowlers.map(async (batsman) => {
-        var p = await Batsman.findOne({name:batsman.name});
+    // var arr4=d[d.bowling].bowlers.map(async (batsman) => {
+        for(batsman of d[d.bowling].bowlers ){
+        if(batsman.name.trim() != ''){
+        var p = await Bowler.findOne({name:batsman.name});
         console.log("value of b",p);
         if(p==null){
-            var p=new Batsman({
-            name:batsman.name,runsGiven:batsman.runsGiven,ballsDelivered:parseInt(batsman.ballsDelivered + batsman.over*6),
-            overs:`${Math.floor(batsman.over)}.${(batsman.ballsDelivered)}`,
-             wickets : batsman.wickets,economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2)
+            var p=new Bowler({
+            name:batsman.name,runsGiven:batsman.runsGiven,ballsDelivered:calcualteBallsDelivered(batsman),
+            overs:`${Math.floor(batsman.overs)}.${(batsman.ballsDelivered)}`,
+             wickets : parseInt(batsman.wicket),economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2),
+             ballInnings:1
             });
 
-            const sdata=await p.save();
-            console.log(sdata);
+            p.save();
+            // console.log(sdata);
         }else{
-            p.runsGiven=p.runsGiven+batsman.runsGiven;
-            p.ballsDelivered=parseInt(p.ballsDelivered+batsman.ballsDelivered);
-            p.ballInnings+=1;
-            p.wickets=p.wickets+batsman.wickets;
+            p.runsGiven=parseInt(p.runsGiven)+parseInt(batsman.runsGiven);
+            p.ballsDelivered=p.ballsDelivered+calcualteBallsDelivered(batsman);
+            p.ballInnings=p.ballInnings+1;
+            p.wickets=parseInt(p.wickets)+parseInt(batsman.wicket);
             p.overs=`${Math.floor(p.ballsDelivered/6)}.${(p.ballsDelivered%6)}`;
             p.economy=(p.runsGiven/parseFloat(p.overs)).toFixed(2);
-            var savedData=await p.save();
-            console.log(savedData);
+           p.save();
+            // console.log(savedData);
         }
-    });
+    }
+}
+    // });
 
 
-    Promise.all(arr);
-    Promise.all(arr2);
-    Promise.all(arr3);
-    Promise.all(arr4);
+    // Promise.all(arr);
+    // Promise.all(arr2);
+    // Promise.all(arr3);
+    // Promise.all(arr4);
     res.json("Successfull");
+});
+
+app.get("/orangeCap",async (req,res) => {
+    var d=await Batsman.find({}).sort({runs:-1});
+    console.log(d);
+    res.json({data:d});
+});
+
+app.get("/purpleCap",async (req,res) => {
+    var d=await Bowler.find({}).sort({wickets:-1});
+    console.log(d);
+    res.json({data:d});
 })
+
+const calcualteBallsDelivered = (batsman) => {
+    var ans;
+    console.log(parseInt(batsman.ballsDelivered));
+    console.log(parseInt(batsman.overs)*6);
+    console.log(batsman.overs);
+    console.log(isNaN(parseInt(batsman.ballsDelivered)));
+    console.log(isNaN(parseInt(batsman.overs)*6));
+    if(isNaN(parseInt(batsman.ballsDelivered)) == false){
+        ans=parseInt(parseInt(batsman.ballsDelivered) + parseInt(batsman.overs)*6)
+    }else{
+        ans=parseInt(batsman.overs)*6;
+    }
+    console.log(ans);
+    return ans;
+}
 
 app.get('*', function(req, res) {
     // console.log(path.join(__dirname, '../build', 'index.html'));
