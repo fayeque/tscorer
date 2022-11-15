@@ -110,11 +110,12 @@ app.post("/generateReport",async (req,res) => {
     console.log(d);
     // var arr=d[d.batting].batsmans.map(async (batsman) => {
         for(batsman of d[d.batting].batsmans){
-        var b = await Batsman.findOne({name:batsman.name});
+        if(batsman.name.trim() != ''){
+        var b = await Batsman.findOne({name:batsman.name.trim().toUpperCase()});
         console.log("value of b",b);
         if(b==null){
             var b=new Batsman({
-            name:batsman.name,
+            name:batsman.name.trim().toUpperCase(),
             runs:batsman.runs,
             ballsPlayed:batsman.balls,
             // dots:batsman.dot,
@@ -135,15 +136,17 @@ app.post("/generateReport",async (req,res) => {
         // console.log(savedData);
         }
     }
+    }
     // });
 
     // var arr2=d[d.bowling].batsmans.map(async (batsman) => {
         for(batsman of d[d.bowling].batsmans ){
-        var b = await Batsman.findOne({name:batsman.name});
+        if(batsman.name.trim() != ''){
+        var b = await Batsman.findOne({name:batsman.name.trim().toUpperCase()});
         console.log("value of b",b);
         if(b==null){
             var b=new Batsman({
-            name:batsman.name,runs:batsman.runs,ballsPlayed:batsman.balls,
+            name:batsman.name.trim().toUpperCase(),runs:batsman.runs,ballsPlayed:batsman.balls,
             dots:batsman.dot,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
             });
 
@@ -160,18 +163,19 @@ app.post("/generateReport",async (req,res) => {
         // console.log(savedData);
         }
     }
+    }
     // });
 
     // bowler:{name:"",runsGiven:0,ballsDelivered:0,overs:0,economy:0,wicket:0,timeline:[]},
     // var arr3=d[d.batting].bowlers.map(async (batsman) => {
         for(batsman of d[d.batting].bowlers ){
         if(batsman.name.trim() != ''){
-        var p = await Bowler.findOne({name:batsman.name});
+        var p = await Bowler.findOne({name:batsman.name.trim().toUpperCase()});
         console.log("value of b",p);
         console.log(parseInt(parseInt(batsman.ballsDelivered) + parseInt(batsman.over*6)));
         if(p==null){
             var p=new Bowler({
-            name:batsman.name,runsGiven:batsman.runsGiven,ballsDelivered: calcualteBallsDelivered(batsman),
+            name:batsman.name.trim().toUpperCase(),runsGiven:batsman.runsGiven,ballsDelivered: calcualteBallsDelivered(batsman),
             overs:`${Math.floor(batsman.overs)}.${(batsman.ballsDelivered)}`,
              wickets : parseInt(batsman.wicket),economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2),
              ballInnings : 1
@@ -196,11 +200,11 @@ app.post("/generateReport",async (req,res) => {
     // var arr4=d[d.bowling].bowlers.map(async (batsman) => {
         for(batsman of d[d.bowling].bowlers ){
         if(batsman.name.trim() != ''){
-        var p = await Bowler.findOne({name:batsman.name});
+        var p = await Bowler.findOne({name:batsman.name.trim().toUpperCase()});
         console.log("value of b",p);
         if(p==null){
             var p=new Bowler({
-            name:batsman.name,runsGiven:batsman.runsGiven,ballsDelivered:calcualteBallsDelivered(batsman),
+            name:batsman.name.trim().toUpperCase(),runsGiven:batsman.runsGiven,ballsDelivered:calcualteBallsDelivered(batsman),
             overs:`${Math.floor(batsman.overs)}.${(batsman.ballsDelivered)}`,
              wickets : parseInt(batsman.wicket),economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2),
              ballInnings:1
@@ -230,6 +234,15 @@ app.post("/generateReport",async (req,res) => {
     res.json("Successfull");
 });
 
+app.get("/updateBatsmanCase",async (req,res) => {
+    const batsmans= await Batsman.find({});
+    for(batsman of batsmans){
+        batsman.name=batsman.name.trim().toUpperCase();
+        await batsman.save();
+    }
+    res.json("successfull updated");
+})
+
 app.get("/orangeCap",async (req,res) => {
     var d=await Batsman.find({}).sort({runs:-1});
     console.log(d);
@@ -237,7 +250,7 @@ app.get("/orangeCap",async (req,res) => {
 });
 
 app.get("/purpleCap",async (req,res) => {
-    var d=await Bowler.find({}).sort({wickets:-1});
+    var d=await Bowler.find({}).sort({wickets:-1,economy:1});
     console.log(d);
     res.json({data:d});
 })
