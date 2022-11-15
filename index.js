@@ -234,14 +234,22 @@ app.post("/generateReport",async (req,res) => {
     res.json("Successfull");
 });
 
-app.get("/updateBatsmanCase",async (req,res) => {
-    const batsmans= await Batsman.find({});
-    for(batsman of batsmans){
-        batsman.name=batsman.name.trim().toUpperCase();
-        await batsman.save();
-    }
-    res.json("successfull updated");
-})
+// app.get("/updateBatsmanCase",async (req,res) => {
+//     const batsmans= await Batsman.find({});
+//     for(batsman of batsmans){
+//         batsman.name=batsman.name.trim().toUpperCase();
+//         await batsman.save();
+//     }
+//     res.json("successfull updated");
+// });
+
+// app.get("/updateBowlerCase",async (req,res) => {
+//     const batsmans= await Bowler.find({name:'Adil Bhai'.trim().toUpperCase()});
+//     for(batsman of batsmans){
+//         console.log(batsman);
+//     }
+//     res.json("successfull updated");
+// })
 
 app.get("/orangeCap",async (req,res) => {
     var d=await Batsman.find({}).sort({runs:-1});
