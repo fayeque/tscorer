@@ -126,8 +126,8 @@ app.post("/generateReport",async (req,res) => {
             b.save();
             // console.log(sdata);
         }else{
-        b.runs += batsman.runs;
-        b.ballsPlayed += batsman.balls;
+        b.runs = parseInt(b.runs) + parseInt(batsman.runs);
+        b.ballsPlayed = parseInt(b.ballsPlayed) + parseInt(batsman.balls);
         b.dots += batsman.dot;
         b.sixes += batsman.sixes;
         b.fours += batsman.fours;
@@ -153,8 +153,8 @@ app.post("/generateReport",async (req,res) => {
             b.save();
             // console.log(sdata);
         }else{
-        b.runs += batsman.runs;
-        b.ballsPlayed += batsman.balls;
+        b.runs = parseInt(b.runs) + parseInt(batsman.runs);
+        b.ballsPlayed = parseInt(b.ballsPlayed) + parseInt(batsman.balls);
         b.dots += batsman.dot;
         b.sixes += batsman.sixes;
         b.fours += batsman.fours;
@@ -185,7 +185,7 @@ app.post("/generateReport",async (req,res) => {
             // console.log(sdata);
         }else{
             p.runsGiven=parseInt(p.runsGiven)+parseInt(batsman.runsGiven);
-            p.ballsDelivered=p.ballsDelivered+calcualteBallsDelivered(batsman);
+            p.ballsDelivered=parseInt(p.ballsDelivered)+parseInt(calcualteBallsDelivered(batsman));
             p.ballInnings=p.ballInnings+1;
             p.wickets=parseInt(p.wickets)+parseInt(batsman.wicket);
             p.overs=`${Math.floor(p.ballsDelivered/6)}.${(p.ballsDelivered%6)}`;
@@ -214,7 +214,7 @@ app.post("/generateReport",async (req,res) => {
             // console.log(sdata);
         }else{
             p.runsGiven=parseInt(p.runsGiven)+parseInt(batsman.runsGiven);
-            p.ballsDelivered=p.ballsDelivered+calcualteBallsDelivered(batsman);
+            p.ballsDelivered=parseInt(p.ballsDelivered)+parseInt(calcualteBallsDelivered(batsman));
             p.ballInnings=p.ballInnings+1;
             p.wickets=parseInt(p.wickets)+parseInt(batsman.wicket);
             p.overs=`${Math.floor(p.ballsDelivered/6)}.${(p.ballsDelivered%6)}`;
@@ -262,6 +262,92 @@ app.get("/purpleCap",async (req,res) => {
     console.log(d);
     res.json({data:d});
 })
+
+
+app.post("/reverseGeneratedReport",async (req,res) => {
+    console.log("request here");
+    // console.log(req.body);
+    var d=req.body;
+    console.log(d);
+    // var arr=d[d.batting].batsmans.map(async (batsman) => {
+        for(batsman of d[d.batting].batsmans){
+        if(batsman.name.trim() != ''){
+        var b = await Batsman.findOne({name:batsman.name.trim().toUpperCase()});
+        console.log("value of b",b);
+        b.runs = parseInt(b.runs) - parseInt(batsman.runs);
+        b.ballsPlayed = parseInt(b.ballsPlayed) - parseInt(batsman.balls);
+        b.dots -= batsman.dot;
+        b.sixes -= batsman.sixes;
+        b.fours -= batsman.fours;
+        b.matchesPlayed -= 1;
+         b.save();
+        // console.log(savedData);
+        }
+    }
+    // });
+
+    // var arr2=d[d.bowling].batsmans.map(async (batsman) => {
+        for(batsman of d[d.bowling].batsmans ){
+        if(batsman.name.trim() != ''){
+        var b = await Batsman.findOne({name:batsman.name.trim().toUpperCase()});
+        console.log("value of b",b);
+        b.runs = parseInt(b.runs) - parseInt(batsman.runs);
+        b.ballsPlayed = parseInt(b.ballsPlayed) - parseInt(batsman.balls);
+        b.dots -= batsman.dot;
+        b.sixes -= batsman.sixes;
+        b.fours -= batsman.fours;
+        b.matchesPlayed -= 1;
+        b.save();
+        // console.log(savedData);
+        }
+    }
+    
+    // });
+
+    // bowler:{name:"",runsGiven:0,ballsDelivered:0,overs:0,economy:0,wicket:0,timeline:[]},
+    // var arr3=d[d.batting].bowlers.map(async (batsman) => {
+        for(batsman of d[d.batting].bowlers ){
+        if(batsman.name.trim() != ''){
+        var p = await Bowler.findOne({name:batsman.name.trim().toUpperCase()});
+        console.log("value of b",p);
+        console.log(parseInt(parseInt(batsman.ballsDelivered) + parseInt(batsman.over*6)));
+            p.runsGiven=parseInt(p.runsGiven)-parseInt(batsman.runsGiven);
+            p.ballsDelivered=parseInt(p.ballsDelivered)-parseInt(calcualteBallsDelivered(batsman));
+            p.ballInnings=p.ballInnings-1;
+            p.wickets=parseInt(p.wickets)-parseInt(batsman.wicket);
+            p.overs=`${Math.floor(p.ballsDelivered/6)}.${(p.ballsDelivered%6)}`;
+            p.economy=(p.runsGiven/parseFloat(p.overs)).toFixed(2);
+            p.save();
+            // console.log(savedData);
+        }
+    }
+
+    // });
+
+    // var arr4=d[d.bowling].bowlers.map(async (batsman) => {
+        for(batsman of d[d.bowling].bowlers ){
+        if(batsman.name.trim() != ''){
+        var p = await Bowler.findOne({name:batsman.name.trim().toUpperCase()});
+        console.log("value of b",p);
+            p.runsGiven=parseInt(p.runsGiven)-parseInt(batsman.runsGiven);
+            p.ballsDelivered=parseInt(p.ballsDelivered)-parseInt(calcualteBallsDelivered(batsman));
+            p.ballInnings=p.ballInnings-1;
+            p.wickets=parseInt(p.wickets)-parseInt(batsman.wicket);
+            p.overs=`${Math.floor(p.ballsDelivered/6)}.${(p.ballsDelivered%6)}`;
+            p.economy=(p.runsGiven/parseFloat(p.overs)).toFixed(2);
+           p.save();
+            // console.log(savedData);
+        }
+    }
+
+    // });
+
+    // Promise.all(arr);
+    // Promise.all(arr2);
+    // Promise.all(arr3);
+    // Promise.all(arr4);
+    res.json("Successfull");
+});
 
 const calcualteBallsDelivered = (batsman) => {
     var ans;
