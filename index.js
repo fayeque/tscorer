@@ -103,6 +103,34 @@ app.get("/match/scorecard/:matchId",async (req,res) => {
 // sixes:Number,
 // fours:Number,
 // dots:Number
+
+app.get('/updateExisting',async (req,res) => {
+    var result = await batsman.find({});
+
+    result.forEach((doc) => {
+        // Make changes to the document fields if required
+        doc.tournament = 'SUMMER2023';
+      });
+    
+      // Save the modified documents
+      const savedDocuments = await Promise.all(result.map(doc => doc.save()));
+    
+      console.log('Documents updated and saved:', savedDocuments);
+
+    console.log('records updated successfully');
+
+
+    // var bowres= await Bowler.updateMany(
+    //     {},
+    //     {$set:{tournament:'SUMMER2023'}},
+    //     {upsert:true}
+    // );
+    res.json("Successfull");
+  
+
+
+});
+
 app.post("/generateReport",async (req,res) => {
     console.log("request here");
     // console.log(req.body);
@@ -111,7 +139,7 @@ app.post("/generateReport",async (req,res) => {
     // var arr=d[d.batting].batsmans.map(async (batsman) => {
         for(batsman of d[d.batting].batsmans){
         if(batsman.name.trim() != ''){
-        var b = await Batsman.findOne({name:batsman.name.trim().toUpperCase()});
+        var b = await Batsman.findOne({name:batsman.name.trim().toUpperCase(),tournament:'TPL2023'});
         console.log("value of b",b);
         if(b==null){
             var b=new Batsman({
@@ -121,7 +149,8 @@ app.post("/generateReport",async (req,res) => {
             // dots:batsman.dot,
             sixes:batsman.sixes,
             fours:batsman.fours,
-            matchesPlayed:1
+            matchesPlayed:1,
+            tournament:'TPL2023'
             });
             b.save();
             // console.log(sdata);
@@ -142,12 +171,12 @@ app.post("/generateReport",async (req,res) => {
     // var arr2=d[d.bowling].batsmans.map(async (batsman) => {
         for(batsman of d[d.bowling].batsmans ){
         if(batsman.name.trim() != ''){
-        var b = await Batsman.findOne({name:batsman.name.trim().toUpperCase()});
+        var b = await Batsman.findOne({name:batsman.name.trim().toUpperCase(),tournament:'TPL2023'});
         console.log("value of b",b);
         if(b==null){
             var b=new Batsman({
             name:batsman.name.trim().toUpperCase(),runs:batsman.runs,ballsPlayed:batsman.balls,
-            dots:batsman.dot,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1
+            dots:batsman.dot,sixes:batsman.sixes,fours:batsman.fours,matchesPlayed:1,tournament:'TPL2023'
             });
 
             b.save();
@@ -170,7 +199,7 @@ app.post("/generateReport",async (req,res) => {
     // var arr3=d[d.batting].bowlers.map(async (batsman) => {
         for(batsman of d[d.batting].bowlers ){
         if(batsman.name.trim() != ''){
-        var p = await Bowler.findOne({name:batsman.name.trim().toUpperCase()});
+        var p = await Bowler.findOne({name:batsman.name.trim().toUpperCase(),tournament:'TPL2023'});
         console.log("value of b",p);
         console.log(parseInt(parseInt(batsman.ballsDelivered) + parseInt(batsman.over*6)));
         if(p==null){
@@ -178,7 +207,7 @@ app.post("/generateReport",async (req,res) => {
             name:batsman.name.trim().toUpperCase(),runsGiven:batsman.runsGiven,ballsDelivered: calcualteBallsDelivered(batsman),
             overs:`${Math.floor(batsman.overs)}.${(batsman.ballsDelivered)}`,
              wickets : parseInt(batsman.wicket),economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2),
-             ballInnings : 1
+             ballInnings : 1,tournament:'TPL2023'
             });
 
             p.save();
@@ -200,14 +229,14 @@ app.post("/generateReport",async (req,res) => {
     // var arr4=d[d.bowling].bowlers.map(async (batsman) => {
         for(batsman of d[d.bowling].bowlers ){
         if(batsman.name.trim() != ''){
-        var p = await Bowler.findOne({name:batsman.name.trim().toUpperCase()});
+        var p = await Bowler.findOne({name:batsman.name.trim().toUpperCase(),tournament:'TPL2023'});
         console.log("value of b",p);
         if(p==null){
             var p=new Bowler({
             name:batsman.name.trim().toUpperCase(),runsGiven:batsman.runsGiven,ballsDelivered:calcualteBallsDelivered(batsman),
             overs:`${Math.floor(batsman.overs)}.${(batsman.ballsDelivered)}`,
              wickets : parseInt(batsman.wicket),economy:(batsman.runsGiven/parseFloat(batsman.overs)).toFixed(2),
-             ballInnings:1
+             ballInnings:1,tournament:'TPL2023'
             });
 
             p.save();
@@ -251,11 +280,78 @@ app.post("/generateReport",async (req,res) => {
 //     res.json("successfull updated");
 // })
 
-app.get("/orangeCap",async (req,res) => {
-    var d=await Batsman.find({}).sort({runs:-1});
+app.get("/orangeCap/:tournamentName",async (req,res) => {
+    var d=await Batsman.find({tournament:req.params.tournamentName}).sort({runs:-1});
     console.log(d);
     res.json({data:d});
 });
+
+
+app.get("/purpleCap/:tournamentName",async (req,res) => {
+    var d=await Bowler.find({tournament:req.params.tournamentName}).sort({wickets:-1,economy:1});
+    console.log(d);
+    res.json({data:d});
+});
+
+app.get("/batsmanTournaments",async (req,res) => {
+    Batsman.aggregate([
+        // Group by the tournament field and push all dates into an array for each tournament
+        {
+          $group: {
+            _id: '$tournament',
+            dates: { $push: '$date' }
+          }
+        },
+        { $sort: { 'dates': -1 } }, // Sort by dates array in descending order
+        // Sort the results based on the dates in descending order (assuming it's a date field)
+        {
+          $project: {
+            _id: 0,
+            tournament: '$_id'
+          }
+        }
+       
+      ])
+      .exec((err, result) => {
+        if (err) {
+          console.error('Error:', err);
+        } else {
+          console.log('Distinct tournaments sorted by date:', result);
+          res.json({data:result});
+        }
+      });
+});
+
+app.get("/bowlingTournaments",async (req,res) => {
+    Bowler.aggregate([
+        // Group by the tournament field and push all dates into an array for each tournament
+        {
+          $group: {
+            _id: '$tournament',
+            dates: { $push: '$date' }
+          }
+        },
+        { $sort: { 'dates': -1 } }, // Sort by dates array in descending order
+        // Sort the results based on the dates in descending order (assuming it's a date field)
+        {
+          $project: {
+            _id: 0,
+            tournament: '$_id'
+          }
+        }
+       
+      ])
+      .exec((err, result) => {
+        if (err) {
+          console.error('Error:', err);
+        } else {
+          console.log('Distinct tournaments sorted by date:', result);
+          res.json({data:result});
+        }
+      });
+});
+
+
 
 app.get("/purpleCap",async (req,res) => {
     var d=await Bowler.find({}).sort({wickets:-1,economy:1});

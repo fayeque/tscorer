@@ -8,6 +8,7 @@ var batsmanSchema=new mongoose.Schema({
     fours:{type:Number,default:0},
     dots:{type:Number,default:0},
     matchesPlayed:{type:Number,default:0},
+    tournament:{type:String},
     date: {
         type: Date,
         default: Date.now

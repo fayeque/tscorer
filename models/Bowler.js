@@ -8,6 +8,7 @@ var bowlerSchema=new mongoose.Schema({
     wickets:{type:Number,default:0},
     runsGiven:{type:Number,default:0},
     overs:{type:String,default:''},
+    tournament:{type:String},
     date: {
         type: Date,
         default: Date.now
